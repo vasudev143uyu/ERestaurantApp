@@ -23,8 +23,13 @@ jobs:
       - run:
           name: Check Salesforce Source Directory
           command: |
-            test -d force-app/main/default
-            echo "Salesforce source directory exists"
+            if [ -d "force-app/main/default" ]; then
+              echo "Salesforce source directory exists"
+              find force-app/main/default -type f
+            else
+              echo "Salesforce source directory not found"
+              exit 1
+            fi
 
 workflows:
   salesforce-pipeline:
