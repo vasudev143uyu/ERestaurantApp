@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   salesforce-ci:
     docker:
-      - image: cimg/node:22.12
+      - image: cimg/node:22.15.0
 
     steps:
       - checkout
