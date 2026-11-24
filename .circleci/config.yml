@@ -1,0 +1,32 @@
+version: 2.1
+
+jobs:
+  salesforce-ci:
+    docker:
+      - image: cimg/node:22.12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Salesforce CLI
+          command: |
+            npm install --global @salesforce/cli
+            sf version
+
+      - run:
+          name: Validate Salesforce Project Configuration
+          command: |
+            test -f sfdx-project.json
+            node -e "JSON.parse(require('fs').readFileSync('sfdx-project.json', 'utf8')); console.log('Salesforce project configuration is valid JSON')"
+
+      - run:
+          name: Check Salesforce Source Directory
+          command: |
+            test -d force-app/main/default
+            echo "Salesforce source directory exists"
+
+workflows:
+  salesforce-pipeline:
+    jobs:
+      - salesforce-ci
