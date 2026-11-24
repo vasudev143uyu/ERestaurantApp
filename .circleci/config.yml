@@ -8,7 +8,7 @@ jobs:
     steps:
       - checkout
 
-       - run:
+      - run:
           name: Install Salesforce CLI
           command: |
             sudo npm install --global @salesforce/cli
