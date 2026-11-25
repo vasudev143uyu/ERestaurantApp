@@ -4,7 +4,6 @@ jobs:
   salesforce-ci:
     docker:
       - image: cimg/node:22.15.0
-
     steps:
       - checkout
 
@@ -15,6 +14,18 @@ jobs:
             sf version
 
       - run:
+          name: Authenticate with Salesforce
+          command: |
+            echo "$SF_JWT_KEY_B64" | base64 --decode > /tmp/server.key
+            chmod 600 /tmp/server.key
+            sf org login jwt \
+              --client-id "$SF_CLIENT_ID" \
+              --jwt-key-file /tmp/server.key \
+              --username "$SF_USERNAME" \
+              --instance-url "$SF_LOGIN_URL" \
+              --alias ERestaurantDev
+
+      - run:
           name: Validate Salesforce Project Configuration
           command: |
             test -f sfdx-project.json
@@ -23,13 +34,8 @@ jobs:
       - run:
           name: Check Salesforce Source Directory
           command: |
-            if [ -d "force-app/main/default" ]; then
-              echo "Salesforce source directory exists"
-              find force-app/main/default -type f
-            else
-              echo "Salesforce source directory not found"
-              exit 1
-            fi
+            test -d force-app/main/default
+            echo "Salesforce source directory exists"
 
 workflows:
   salesforce-pipeline:
