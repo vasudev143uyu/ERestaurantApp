@@ -1,3 +1,4 @@
+
 version: 2.1
 
 jobs:
@@ -36,6 +37,14 @@ jobs:
           command: |
             test -d force-app/main/default
             echo "Salesforce source directory exists"
+
+      - run:
+          name: Deploy Salesforce Metadata
+          command: |
+            sf project deploy start \
+              --source-dir force-app \
+              --target-org ERestaurantDev \
+              --wait 30
 
 workflows:
   salesforce-pipeline:
